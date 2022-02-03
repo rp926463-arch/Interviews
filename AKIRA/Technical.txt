@@ -1,0 +1,362 @@
+CREATE TABLE A (id INT, val VARCHAR(20));
+
+CREATE TABLE B (id INT, val VARCHAR(20));
+
+INSERT INTO A (id, val) VALUES(1,10);
+INSERT INTO A (id, val) VALUES(1,20);
+INSERT INTO A (id, val) VALUES(2,35);
+INSERT INTO A (id, val) VALUES(2,40);
+INSERT INTO A (id, val) VALUES(3,43);
+INSERT INTO A (id, val) VALUES(4,77);
+
+INSERT INTO B (id, val) VALUES(1,10);
+INSERT INTO B (id, val) VALUES(4,34);
+INSERT INTO B (id, val) VALUES(5,54);
+INSERT INTO B (id, val) VALUES(6,65);
+INSERT INTO B (id, val) VALUES(3,43);
+INSERT INTO B (id, val) VALUES(7,65);
+
+
+A						B	
+
+id	val					id	val
+1	10					1	10
+1	20					4	34
+2	35					5	54
+2	40					6	65
+3	43					3	43
+4	77					7	65
+_____________________________________________________________________________________________________
+SELECT * FROM A UNION SELECT * FROM B
+
+id	val
+1	10
+1	20
+2	35
+2	40
+3	43
+4	34
+4	77
+5	54
+6	65
+7	65
+
+_____________________________________________________________________________________________________
+SELECT * FROM A UNION ALL SELECT * FROM B
+
+id	val
+1	10
+1	20
+2	35
+2	40
+3	43
+4	77
+1	10
+4	34
+5	54
+6	65
+3	43
+7	65
+_____________________________________________________________________________________________________
+SELECT A.*,B.* FROM A INNER JOIN B ON A.ID = B.ID
+
+1	10	1	10
+1	20	1	10
+3	43	3	43
+4	77	4	34
+_____________________________________________________________________________________________________
+SELECT * FROM A,B
+(6*6) rows
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+|LEARNING
+-----------------------------------------------------------------------------------------------------------------------------------------------
+Set Operators in SQl[UNNION, UNION ALL, EXCEPT, INTERSECT]
+
+
+SELECT Column1, Column2, … ColumnN
+FROM <table>
+[WHERE conditions]
+[GROUP BY Column(s]]
+[HAVING condition(s)]
+UNION
+SELECT Column1, Column2, … ColumnN
+FROM table
+[WHERE condition(s)];
+ORDER BY Column1,Column2…
+
+Rules:
+--used between two queries
+--No.of column order defined in each query should be same
+--Subsequent SQL Statement row sets must match the data type data type of first query
+--it is possible to have order by clause but that should be in last statement of SQL
+--GROUP BY & HAVING clause can be applied to individual query
+--The column names in both the select statements can be different but the
+ data type must be same.And in the result set the name of column used in the first
+ select statement will appear.
+
+Note:
+--All of these set operators remove duplicate except UNION ALL
+--SET Operators combines rows from multiple tables while SQL Joins combine columns from Multiple tables
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+|LEARNING
+-----------------------------------------------------------------------------------------------------------------------------------------------
+--The EXISTS operator returns true if the subquery returns at least one record and false if no row is selected.
+--The NOT EXISTS operator returns true if the underlying subquery returns no record. However, if a single record is matched by the inner subquery, the NOT EXISTS operator will return false, and the subquery execution can be stopped.
+
+_____________________________________________________________________________________________________
+Q.Get records from A which are not in B
+
+select * from A where (id, val) not in (select id,val from B);
+
+select * from A EXCEPT select * from B;
+
+SELECT  a.id, a.val from A a left join B b on a.id = b.id and a.val = b.val where b.id is NULL and b.val is NULL;
+
+select * from A where NOT EXISTS (select * from B where A.id = B.id and A.val = B.val);
+
+
+id	val
+1	20
+2	35
+2	40
+4	77
+______________________________________________________________________________________________________
+@select Unique ID from A
+
+select id from
+(SELECT *, ROW_NUMBER() over(partition by id) as number from A) a
+where a.number=1
+
+SELECT ID FROM A GROUP BY id;
+
+id
+1
+2
+3
+4
+___________________________________________________________________________________________________
+
+CREATE TABLE TRANSACTION_T (TID INT IDENTITY(1,1) PRIMARY KEY,TDATE DATE, SALE DECIMAL(10,2));
+
+INSERT INTO TRANSACTION_T (TID, TDATE, SALE) VALUES(1,"2021-01-12", 101);
+INSERT INTO TRANSACTION_T (TID, TDATE, SALE) VALUES(2,"2021-02-05", 129);
+INSERT INTO TRANSACTION_T (TID, TDATE, SALE) VALUES(3,"2021-01-03", 300);
+INSERT INTO TRANSACTION_T (TID, TDATE, SALE) VALUES(4,"2021-02-07", 100);
+INSERT INTO TRANSACTION_T (TID, TDATE, SALE) VALUES(5,"2020-01-02", 400);
+
+
+
+TID	TDATE		SALE
+1	2021-01-12	101
+2	2021-02-05	129
+3	2021-01-03	300
+4	2021-02-07	100
+5	2020-01-02	400
+
+Q.SALE For first week of every month by year
+
+--SQL
+select sum(sale),MONTH(tdate) as month, YEAR(tdate) as year from TRANSACTION_T 
+where CAST(DAY(tdate) as int) BETWEEN 1 and 7
+GROUP by month, year
+
+--SQLlite
+select sum(sale),strftime('%m', tdate) as month, strftime('%Y', tdate) as year1 from TRANSACTION_T 
+where CAST(strftime('%d', tdate) as int) BETWEEN 1 and 7
+GROUP by month, year1
+____________________________________________________________________________________________________
+
+CREATE TABLE EMPLOYEE (EMPID int, SALARY DECIMAL(10,2));
+
+INSERT INTO EMPLOYEE (EMPID, SALARY) VALUES(1,100);
+INSERT INTO EMPLOYEE (EMPID, SALARY) VALUES(2,100);
+INSERT INTO EMPLOYEE (EMPID, SALARY) VALUES(3,150);
+INSERT INTO EMPLOYEE (EMPID, SALARY) VALUES(4,200);
+INSERT INTO EMPLOYEE (EMPID, SALARY) VALUES(5,125);
+INSERT INTO EMPLOYEE (EMPID, SALARY) VALUES(6,50);
+
+EMPID	SALARY
+1	100	
+2	100
+3	150
+4	200
+5	125
+6	50
+
+Q.select 7th highest salary of employee
+select SALARY from (select *, DENSE_RANK() over (order by salary desc) as rank from EMPLOYEE) where rank = 7;
+__________________________________________________________________________________________________________________
+
+---------
+| SPARK	|
+---------
+
+data = [('James', 'Smith', 'M', 3000), ('Anna', 'Rose', 'F', 2100), ('Robert', 'Williams', 'M', 4200)]
+
+columns = ['FirstName', 'LastName', 'Gender', 'Salary']
+
+df = spark.createDataframe(data=data, schema=columns)
+
+----------------------------------
+|FirstName|LastName|Gender|Salary|
+----------------------------------
+|James    |Smith   |M	  |3000	 |
+|Anna	  |Rose    |F	  |2100	 |
+|Robert	  |Williams|M	  |4200	 |
+----------------------------------
+_________________________________________________________________________________________________________________
+Q.Add new Column to Spark DataFrame
+1)With Constant Value
+
+from pyspark.sql.functions import lit
+df.withColumn("Bonus_Pers", lit(0.3)).show()
+
+df.withColumn("Column_with_NULL", lit(None)).show()
+
+2)Based on other column
+df.withColumn("Bonus_Amount", df.salary*0.3).show()
+
+#by concatenating existing 2 columns
+
+from pyspark.sql.functions import concat_ws
+df.withColumn("FullName", concat_ws(',',df.FirstName, df.LastName)).show()
+
+3)Add Column value based on Condition
+df.withColumn("Grade", when((df.salary < 4000), lit("A")).when((df.salary >= 4000) & (df.salary <= 5000), lit("B")).otherwise(lit("C"))).show()
+
+from pyspark.sql import functions as F
+
+df.select(df.FullName, F.when((df.salary < 4000), lit("A")).when((df.salary >= 4000) & (df.salary <= 5000), lit("B")).otherwise(lit("C")))
+
+4)Add Column if desired column does not exist
+
+if "Bonus_Pers" not in df.columns:
+	df.withColumn("Bonus_Pers", lit(0.3))
+
+_________________________________________________________________________________________________________________
+Q.Rename Existing Column
+--withColumnRenamed(existingName, newNam)
+
+withColumnRenamed function return new dataFrame & do not modify existing one
+
+df = df.withColumnRenamed("FirstName", "first_name").withColumnRenamed("LastName", "last_name")
+df.printSchema()
+
+from pyspark.sql.functions import col 
+
+df.select(col("FullName").alias("full_name"), col("FirstName").alias("first_name"))
+_________________________________________________________________________________________________________________
+
+Q.Concatenate multiple columns in dataframe to another column when some values are NULL
+
+-----------------
+|a	|b	|
+-----------------
+|foo	|bar	|
+|baz	|null	|
+-----------------
+
+from pyspark.sql.functions as F
+
+def myConcat(*cols):
+	return F.concat(*[F.coalesce(c, F.lit("")) for c in cols])
+
+df.withColumn("unique_id", myConcat("a","b")).show()
+
+----------------------------
+|a	|b	|unique_id |
+----------------------------
+|foo	|bar	|foobar	   |
+|baz	|null	|baz	   |
+----------------------------
+_________________________________________________________________________________________________________________
+
+Q.Optimise below query
+SELECT * FROM TABLE;
+
+-->SELECT COL1, COL2, COL3 FROM TABLE (nolock)
+_________________________________________________________________________________________________________________
+
+Q.Check what is differance between
+COUNT(*)
+COUNT(1)
+COUNT(column name)
+COUNT(DISTINCT column name)
+
+---COUNT(*) will count all the rows in the table, including NULL values
+---COUNT(column name) will count all the rows in the specified column while excluding NULL values
+---COUNT(1) & COUNT(*) are equally faster
+---COUNT("d") function will assign "d" to every row in the table. The function will then count how many times the asterisk (*) or "d" or (1) or (-13) has been assigned. Of course, it will be assigned a number of times that’s equal to the number of rows in the table.
+_________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_________________________________________________________________________________________________________________
+To Practice SQL server Queries
+https://sqliteonline.com/
+https://www.sqlshack.com/
+https://www.hackerrank.com/domains/sql
+https://www.sqlservertutorial.net/
+
+Book	:Microsoft SQL SERVER FUNDAMENTALS
+
+Pratik Shrestha
+_________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
