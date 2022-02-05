@@ -1,0 +1,4 @@
+03/22 08:51:01 INFO :..settcpimage: Associate with TCP/IP image name = TCPCS
+03/22 08:51:02 INFO :..reg_process: registering process with the system
+03/22 08:51:02 INFO :..reg_process: attempt OS/390 registration
+03/22 08:51:02 INFO :..reg_process: return from registration rc=0
