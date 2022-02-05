@@ -1,0 +1,40 @@
+Q.1
+
+{"name": "Gilbert", "wins": [["straight", "7♣"], ["one pair", "10♥"]]}
+{"name": "Alexa", "wins": [["two pair", "4♠"], ["two pair", "9♠"]]}
+{"name": "May", "wins": []}
+{"name": "Deloise", "wins": [["three of a kind", "5♣"]]}
+
+
+Process this file to 
+
++-------+---------------------+
+|name   |col                  |
++-------+---------------------+
+|Gilbert|[straight, 7♣]       |
+|Gilbert|[one pair, 10♥]      |
+|Alexa  |[two pair, 4♠]       |
+|Alexa  |[two pair, 9♠]       |
+|Deloise|[three of a kind, 5♣]|
++-------+---------------------+
+_______________________________________________________________________________________
+Q.2
+
+03/22 08:51:01 INFO :..settcpimage: Associate with TCP/IP image name = TCPCS
+03/22 08:51:02 INFO :..reg_process: registering process with the system
+03/22 08:51:02 INFO :..reg_process: attempt OS/390 registration
+03/22 08:51:02 INFO :..reg_process: return from registration rc=0
+
+
+Process this file to 
+
+
++-------------------+-----+---------------+--------------------+
+|               Date|level|         object|                text|
++-------------------+-----+---------------+--------------------+
+|2022-03-01 08:51:01| INFO|:..settcpimage:|Associate with TC...|
+|2022-03-01 08:51:02| INFO|:..reg_process:|registering proce...|
+|2022-03-01 08:51:02| INFO|:..reg_process:|attempt OS/390 re...|
+|2022-03-01 08:51:02| INFO|:..reg_process:|return from regis...|
++-------------------+-----+---------------+--------------------+
+
