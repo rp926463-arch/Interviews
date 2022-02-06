@@ -1,0 +1,173 @@
+QQ..HOw to use hive queries in Spark 
+https://datascience-enthusiast.com/Python/hive_partitioning_with_Spark.html
+
+Logfile Foramt
+https://www.w3.org/Daemon/User/Config/Logging.html#common-logfile-format
+
+Log Analytics usig Spark
+https://github.com/dipanjanS/data_science_for_all/blob/master/tds_scalable_log_analytics/Scalable_Log_Analytics_Spark.ipynb	
+
+https://databricks.gitbooks.io/databricks-spark-reference-applications/content/logs_analyzer/index.html
+
+https://docs.microsoft.com/en-us/azure/hdinsight/spark/apache-spark-custom-library-website-log-analysis
+
+https://towardsdatascience.com/build-log-analytics-application-using-apache-spark-b5eeca1e53ba
+_______________________________________________________________
+@What is incremenntal data 
+
+@I what situation you would like to drop table but not data in hive external table
+**Use EXTERNAL tables when:
+
+--The data is also used outside of Hive. For example, the data files are read and processed by an existing program that doesn't lock the files.
+--Data needs to remain in the underlying location even after a DROP TABLE. This can apply if you are pointing multiple schemas (tables or views) at a single data set or if you are iterating through various possible schemas.
+--You want to use a custom location such as ASV.
+--Hive should not own data and control settings, dirs, etc., you have another program or process that will do those things.
+--You are not creating table based on existing table (AS SELECT).
+
+**Use INTERNAL tables when:
+--The data is temporary.
+--You want Hive to completely manage the lifecycle of the table and data.
+
+@Inn which situation will i use static partitionninng & dynamic partitioning
+if we know parition values beforehand we will go for static partitioning
+hive>LOAD DATA INPATH '/hdfs path of the file' INTO TABLE t1 PARTITION(country="US")
+hive>LOAD DATA INPATH '/hdfs path of the file' INTO TABLE t1 PARTITION(country="UK")
+e.g. suppose i'm getting countryCode in file Name itself
+
+@Differance between avro/parquet file
+--where these file format came from,
+*Avro came from hadoop file format which can be interchangably used with hadoop as well as other projects, schema evolution is speciality, row based format(means read entire row every time), maintain seperate schema file
+Parquet inpired from Dremel(Distributed SQL query engine) paper, columnar format, schema evolution is not easy as avro, more designed for faster access,better in case of compresssion usecase  
+
+ 
+
+@Differance between datasets,dataframes,rdd
+
+
+@e.g. for compile time error in dataset&datframe
+
+@What is spark Encoders
+
+@if i get spark job & it is working slow what are the troubleshooting measure that i will follow to improve its performance
+
+@How to return duplicates rows from table
+
+@How to remove duplicates rows from table
+
+@What are the advanntages of apache Spark & Apache Flink
+
+@When to use hive or HBase
+
+@How will you read unstructured log data in Spark
+
+@Explain about HDFS
+
+@Basic fundamental questions about Java,Hadoop and its Ecosystem. Mainly focused on Spark (RDD,DataFrame and Dataset). Partitions and memory assignment questions from Spark. HashMap working,String constant pool,Method Overridding,Immutable classes,Singleton classes from java.
+
+@Real time scenerios like if you have 1 TB of file how to distribute over cluster and how much executor memory will be provided.
+
+@hdfs architecture ,big data tech stack and about project.Some work in previous company and work related to the same. Try to stay calm and listen to questions
+
+
+@Unnderstand logical plan & physical plan inn spark
+
+@Partitioning strategies in spark which one to choose
+--Hash partitioning
+--Range partitioning
+HashPartitioner is the default partitioner used by Spark. RangePartitioner will distribute data across partitions based on a specific range. The RangePartitioner will use a column (for a dataframe) that will be used as partition key.
+--As long as there is no data skew, hash partitioning behaves well enough at scale on average.
+--Data skews are completely different problem. If key distribution is significantly skewed, then distribution of the partitioned data, is likely to be skewed, no matter what Partitioner is used.
+--Hash partitioning is a default approach in many systems because it is relatively agnostic, usually behaves reasonably well, and doesn't require additional information about data distribution. These properties make it preferable, in lack of any a priori knowledge about the data.
+
+@@Why not Rannge Partitionr by Default?
+--It is less general than HashPartioner. While HashPartitioner requires only a proper implementation of ## and == for K, RangePartitioner requires an Ordering[K].
+Unlike HashPartitioner, it has to approximate data distribution, therefore it requires additional data scan.
+Because splits are computed based on a particular distribution, it might be unstable when reused across datasets.
+
+@What is differance between Spark Streaming & Spark Structured Streaming
+Spark Streaming is a separate library in Spark to process continuously flowing streaming data. It provides us the DStream API which is powered by Spark RDDs. DStreams provide us data divided in chunks as RDDs received from the source of Streaming to be processed and after processing sends it to the destination.
+Spark Structured Streaming be understood as an unbounded table, growing with new incoming data, i.e. can be thought as stream processing built on Spark SQL.
+@@What is real streaming
+Data which is unbounded and is being processed upon receiving from the Source. This definition is satisfiable (more or less).
+If we talk about Spark Streaming, this is not the case. Spark streaming works on something which we call a micro batch. 
+each incoming record belongs to a batch of DStream. Each batch represents an RDD.
+
+Structured Streaming works on the same architecture of polling the data after some duration, based on your trigger interval but it has some distinction from the Spark Streaming which makes it more inclined towards real streaming. In Structured streaming, there is no concept of a batch. The received data in a trigger is appended to the continuously flowing data stream. Each row of the data stream is processed and the result is updated into the unbounded result table. How you want your result (updated, new result only or all the results) depends on the mode of your operations (Complete, Update, Append).
+
+@What is prunning in spark
+--Static partition prunning helps to skip unnecessary parititions, here we knew filtering condition beforehand
+--if we do not know filter condition beforehand, here comes dynamic partition prunning[extends the concept of broadcast join + generates filtering condition at runtime][available in spark 3.x]
+
+@Triggers in Spark
+Trigger mode
+1)Fixed Interval microbatch
+--here you will set fixed interval say 2 min, spark will create new microbatch every 2 min, if there is no data at source no batch will be created
+2)Trigger once
+--In this case spark will read all data from input in one shot and process it,as soon as data is processed spark will shut down the job, this is used by companies where they prefer cloud infra they will spin up cluster after regular interval of time to ensure that their cluster is not up for very long time & save money
+
+Continous mode
+--In continous mode instead of creating periodic task spark will create long runnning task which will countinously read, process,write task, here event is processed and written to sink as soon as new data is available, to insure fault tolerance/some level of state spark injects marker records in data stream these are called epoch markers, gap between two record is called epoch, when marker is encountered by task task will report to driver about last proccessed record diver will store this information in wtite-head logs
+
+  
+_________________________________________________________
+SPARK OPTIMIZATION
+
+Try to see DAGs
+Try to analyse query plans
+try to put filter if possible before joins
+Use cache/persist wherever required
+
+==>Maximum partition limit in spark is 2GB
+==>Threshold limit for broadcast join = 10 MB
+
+
+-------------------------
+|	KAFKA		|
+-------------------------
+Kafka is a distributed streaming platform
+Kafka is created to solve problem of multiple sources to produce data and multiple application consume same data
+--But over the time kafka is matured as a framework
+1)Now we can build streaming application
+2)Kafka connect to trannsfer data from one system to another
+3)Enterprise messaging system
+4)KSQL Kafka as DB
+
+Concepts::
+--Producer
+--Consumer
+--Broker(service/server) multiple broker which will be storing huge data+Bootrap servers to keep information about brokers
+--Topic
+
+@if Broker goes down how to get topic(kakfa stores topic with replication factor of 3)
+--now we have same topic(partition) on multiple Brokers how consumer will know which broker to connect. for this there is a concept of Leader & ISR
+--parition is unit of replication in kafka
+--Broker A is leader(it will take care of read&write requests of consumers & producer)
+--Broker B will just take care of it is having latest copy of parition 1 
+@Who will decide which broker will be leader & which will be ISR[ZOOKEEPER] will decide that
+
+@Why Consumer group required
+--Concept of consumer group arises for scaling purpose
+--all consumers from Consumer group belong to same application
+--they are assigned to some dedicated partition
+--ideally no. of consumers = No. of partition
+
+@@How we will know which consumer is reading from whihc offset from which paritition
+--earlier zookeper was maintaainning that information but then it becomes bottleneck as there are alot of topics & consumer
+--after kafka version 0.10 kafka creates new topic __consumer_offset [every consumer store their offset on topic]  
+
+
+-----------------------------------------
+|	SPARK MEMORY MANAGEMENT		|
+-----------------------------------------
+Memory give to executor = 1.3 GB
+--Reserved memory=300MB
+--Available memory for executor=1GB
+----User Memory=25% of available mem=250MB which cannot be exted at runtime 
+----Spark memory Fraction =750MB
+------1)Execution memory[part where data generated during processing(intermediate data) is stored(shuffles, joins, sorts, and aggregations and “short lived”)]
+------2)Storage memory[is the part where any cached object will be stored, broadcasted RDD/DataFrame] spark will not give OOM error if we exast this memory it will spill data Disk
+
+
+@@How is executor memory devided?
+@@How Storage memory and execution memory coexist?
+
