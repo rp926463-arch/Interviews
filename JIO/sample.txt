@@ -1,0 +1,3 @@
+id|value
+1|name:Nitesh;salary:10000;city:Mumbai
+2|Org:reliance;Designation:AVP
