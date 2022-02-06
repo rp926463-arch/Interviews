@@ -1,0 +1,137 @@
+CREATE TABLE ParentTable(
+	ParentID int NOT NULL,
+	ParentName nvarchar(250) NULL,
+	CONSTRAINT [PK_PersonalData] PRIMARY KEY CLUSTERED
+	(
+	ParentID ASC
+	)
+) ON [PRIMARY]
+GO
+
+CREATE TABLE ChildTable(
+	ParentID int NOT NULL,
+	ChildID int NOT NULL
+)
+GO
+
+ALTER TABLE [dbo].ChildTable with check add constraint [fk_PersonalData_gender] FOREIGN KEY(ParentID)
+REFERENCES [dbo].ParentTable (ParentID)
+GO
+
+INSERT INTO dbo.ParentTable (ParentID, ParentName)
+VALUES(1,'EmployeeGroup')
+
+INSERT INTO dbo.ParentTable (ParentID, ParentName)
+VALUES(2,'CountryCode')
+
+INSERT INTO dbo.ParentTable (ParentID, ParentName)
+VALUES(3,'PersonalData')
+
+INSERT INTO dbo.ChildTable (ParentID, ChildID)
+VALUES(1,11)
+
+INSERT INTO dbo.ChildTable (ParentID, ChildID)
+VALUES(1,12)
+
+INSERT INTO dbo.ChildTable (ParentID, ChildID)
+VALUES(1,13)
+
+INSERT INTO dbo.ChildTable (ParentID, ChildID)
+VALUES(3,31)
+
+INSERT INTO dbo.ChildTable (ParentID, ChildID)
+VALUES(1,11)
+
+
+Q.1
+-----------------------------------------------------------
+There are two tables
+parent table
+P1 : ParentID, ParentName
+
+children table
+C1 : parentid, childid
+
+Question : Give me query to find parents without child
+--------------------------------------------------------------
+ANS:::::
+select p.parentid from ParentTable p left outer join ChildTable c on p.ParentID=c.ParentID where c.parentid is NULL
+
+select parentid from ParentTable where NOT EXISTS (select * from ChildTable where ParentTable.parentid = ChildTable.parentid);
+
+select parentid from ParentTable EXCEPT select parentid from ChildTable;
+
+select parentid from ParentTable where (parentid) not in (select parentid from ChildTable);
+___________________________________________________________________
+Q.2
+
+id|value
+1|name:Nitesh;salary:10000;city:Mumbai
+2|Org:reliance;Designation:AVP
+
+Expected Output : a data frame with following output
+
+id,key,value
+1,name,Nitesh
+1,salary,100000
+1,city,Mumbai
+2,org,Reliance
+2,Designation,AVP
+
+__________________________________________________________-
+
+
+
+CREATE TABLE city(
+	cityname nvarchar(250) NULL,
+	state_ nvarchar(250) NULL,
+	populationOfCity int NOT NULL
+)
+GO
+
+INSERT INTO dbo.city (cityname, state_, populationOfCity)
+VALUES('Mumbai', 'Maharashtra', 190);
+INSERT INTO dbo.city (cityname, state_, populationOfCity)
+VALUES('Pune', 'Maharashtra', 210);
+INSERT INTO dbo.city (cityname, state_, populationOfCity)
+VALUES('Banglore', 'Karnataka', 110);
+INSERT INTO dbo.city (cityname, state_, populationOfCity)
+VALUES('Hydrabad', 'AndhraPradesh', 230);
+INSERT INTO dbo.city (cityname, state_, populationOfCity)
+VALUES('Indore', 'MadhyaPraddesh', 490);
+INSERT INTO dbo.city (cityname, state_, populationOfCity)
+VALUES('Bhopal', 'MadhyaPraddesh', 390);
+INSERT INTO dbo.city (cityname, state_, populationOfCity)
+VALUES('Nagpur', 'Maharashtra', 140);
+
+
+
+
+Q.3
+
+I have a table city with columns as follows.
+cityname
+state
+populationOfCity
+
+Question : Give me query to have following
+cityname
+state
+populationOfCity
+Percentage Contribution of city to state's total population
+
+cityname	state	populationOfCity	stateTotalPopulation	
+
+
+with cte_1 as
+(
+select *,sum(populationOfCity) over(partition by state_) as statePopulation from city
+)
+select *,CAST(populationOfCity/CAST(statePopulation as DECIMAL) as DECIMAL(3,2))*100 as PerContributionByState from cte_1;
+
+
+
+select *,CAST(populationOfCity/CAST((sum(populationOfCity) over(partition by state_)) as DECIMAL) as DECIMAL(3,2))*100 as PerContributionByState from city;
+
+
+
