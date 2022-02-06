@@ -1,0 +1,159 @@
+*Features of BigData
+1)volume(size of data)
+2)velocity(Speed at which data is crearted)
+3)variety(differant types of data)
+4)Value(Just having Big Data is of no use unless we can turn it into value)
+5)Veracity(trustworthiness of data in terms of accuracy)
+
+*Hadoop products from Cloud
+	GCP-Data Proc
+	Azure-HDInsight
+	AWS-EMR(Elastic mapReduce)
+
+*Hadoop:-
+	Compute-MapReduce
+	Storage-HDFS
+	Resource Management Performed by-YARN
+
+*2 Chalanges for BigData PRocessing
+	1)Frequent node failure due to which there will be data loss ---> Solution:Create Multiple copies of same data(redundancy)
+	2)Manage Communication between nodes  ---> Solution:Mapreduce combine results from individual nodes and returnn result
+
+*Tools in hadoop EcoSystem
+1)Sqoop :- Tool to ingest data from relational DB to HDFS & vice versa
+2)Mahout :- ML on HDFS
+3)Hive :- SQL query on hadoop data
+4)Pig(legacy) :- query  data using scripts(we have SPARK)
+5)HBase :- real time data fetching
+6)Flume(legacy) :- Ingestion system(we have KAFKA)
+7)Oozie(legacy) :- Java web application for job orchestration(we have airflow/ADF)
+
+*SPARK
+Components:1)Spark Core(RDD, DF, DS, SQL)
+2)Spark Streaming
+3)Spark MLLib
+4)GraphX(API for need of complex processig of graph based data models with nodes and interaction between them)
+
+Spark is Compute Framework not for Storage(we can use HDFS)
+
+Hadoop Arch Components:
+1)NameNOde
+2)Secondary nameNode
+3)Data Node
+4)Edge Node
+
+Safe mode of NameNode
+Replica placement
+Balancer process 
+
+*Problem with earlier FS
+we are facing problems with existing FS like NTFS/FTS/ext for distributed computing
+
+
+*Ckeckpointing Process
+Entire NameNode has FS_image(metadata) 
+
+whenever writing file to HDFS 
+secondary nameNode always try to maintain new edits in terms of edit_logs
+if editFile_size > 10mb/ > 10s
+	then go for merge to nameNode(FS_image)
+	& create new_FS_image(called as checkpoint) in secondary NOde
+secondary nameNode maintain editlogs
+editlogs maintain metadata information
+
+Cloud providers for hadoop
+1)Cloudera
+2)HroutnWorks
+3)MapR
+
+Download HrotonWork :- https://www.cloudera.com/downloads/hortonworks-sandbox/hdp.html
+
+oracle vm virtual box windows :- https://www.virtualbox.org/wiki/Downloads
+
+Admin portal in HrotonWork :- Ambari
+Admin portal in Cloudera :- Cloudera Admin
+
+**Differance between fileSystem & Database
+in a File System, files allow storing data while a database is a collection of organized data. Although File System and databases are two ways of managing data, databases have many advantages over File Systems. File System leads to problems like data integrity, data inconsistency and data security, but a database avoids these issues. Unlike a File System, databases are efficient because reading line by line is not required, and certain control mechanisms are in place. The difference between filesystem and database is that filesystem manages only the physical access while database manages both the physical and logical access to the data.
+
+
+*Diff between hdp1 & hdp2
+
+ MapReduce	YARN
+-Job tracker	Resource Manager
+-task tracker	Node Manager
+
+Components of YARN:
+1_Global Resource Manager:-
+--assignn resources among applications for optimal utilization. One cluster has one 
+
+
+
+
+Problems with hadoop1
+1)single point of failure for Namenode
+
+hdfs dfs -put worf.txt /user/root
+hdfs dfs -cat /user/root/worf.txt
+
+Submit hadoop job in Python :
+hadoop jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+-input /user/root/word_count_data.txt \
+-output /user/root/wcoutputnewsaurav \
+-mapper mapper.py \
+-reducer reducer.py \
+-file /root/code/mapper.py \
+-file /root/code/reducer.py
+
+
+===================================================================================
+https://www.cloudera.com/downloads/hortonworks-sandbox/hdp.html
+HDP_3.0.1_virtualbox_181205.ova
+===================================================================================
+
+As traditional relational DB do not perform well on high volume of data
+
+Hive(is data processing engine)
+--Only support structured data(i.e. data in form of roes and columns
+	Structured data-->csv, sql
+	semi-structured data-->JSON, text, xml -->convert to structure
+--For unstructured data use MapReduceCode/Spark(images, video)
+--hive is data warehouse solution build on top of hadoop by facebook
+
+
+Data Lake
+--Capability of Data warehouse + real time processing data capability == Data Lake
+--Central repository for any kind of data of organisation
+--can do OLAP as well as OLTP
+--can store both structured data as well as unstructured data
+--data actually stored in HDFS
+--data can be processed using Hive, MapReduce, Spark
+
+
+Hive structure:
+-Metastore (could be mysql,postgresql) used to store schema for data stored in HDFS
+-Metastore is service present on one of the node in hadoop cluster
+-HIVE Client
+ --contains ways to connect hive
+	1_Theft server
+	2_JDBC server
+	3_ODBC server
+-Hive Services
+ --ways to run queries
+	1_HIve web UI
+	2_CLI
+ --3_Hive server interact with Hive Clients to conect to HIVE
+-Hive Driver
+	--Talking to metastore & converting all sql quries/requests to mapreduce jobs
+
+
+Internal table 
+lifecycle of table managed by hive 
+e.g. if you drop internal table data from hdfs as well as metadata from metastore will be deleted.
+default location to store table data : /hive/warehouse
+
+
+External table
+lifecycle of table not managed by hive
+e.g. if you drop external table only metadata from metastore will be deleted. but data from hdfs will be there
+we can remove it using hdfs dfs -rm /tmp/ext
