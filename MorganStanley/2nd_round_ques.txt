@@ -1,0 +1,10 @@
+@What are namespace in python?
+--NameSpace is a system that has unique name for each and every object in python, object may be a variable or function. Python maintain namespace in the form of Dictionary.
+Name : unique identifier to identify ann object
+Space : talks something related to scope(location from where it is trying )
+
+@What is spark core
+@what is index tunning in SQL
+@SQL query optimization techniques
+@give example & differance between independent and co-related query
+@Create DataFrame from RDD
