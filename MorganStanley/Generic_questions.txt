@@ -1,0 +1,432 @@
+Q.SQL queries.(Medium Level of Leet Code).
+Q.Basic Concepts for creation of Datawarehouse and Data Mart?
+**DataMart
+--DataMart is focused in single functional area of an organization and contains subset of data stored in data warehouse
+--DataMart is a condensed version of dataWarehouse and is designed for use by specific department, units or set of organization e.g HR, Marketing, Finance(it is often controlled by single department in organization)
+--DataMart usually draws data from only few sources compared to data warehouse 
+--DataMarts are small in size and more flexible compared to data warehouse.
+
+**DataWarehouse
+is a heterogenouse collection of differant sources organized under unified schema.There are 2 approaches to construct data warehouse.
+1)Top down approach
+Sources --> Staging area -->Data Warehouse-->DataMarts
+--This approach is defined by Inmon as – datawarehouse as a central repository for the complete organisation and data marts are created from it after the complete datawarehouse has been created.  
+--The cost, time taken in designing and its maintenance is very high. 
+
+2)Bottom up approach
+Sources --> Stagin area --> DataMarts --> Data Warehouse
+This approach is given by Kinball as – data marts are created first and provides a thin view for analyses and datawarehouse is created after complete data marts have been created. 
+--the cost and time taken in designing this model is low comparatively. 
+
+Q.Difference betweeen Star schema and Snowflake Schema.
+--StarSchema
+Fact tables & Dimension tables are in Denormalized form
+Easy to understand
+it has redundant data and is less easy to maintain 
+it cosist of single dimension table for each dimesion
+less no. of foreign keys & takes less time for execution
+--Snowflake schema
+Fact Tables are in Denormalized form but Dimension table is in Normalized form
+Complex structure
+No redundancy hence easier to maintain
+it contains more than one dimension table for each dimension
+More foreign keys and takes longer time for execution
+
+Q.Project level details, if handled Big data .. Process of handaling
+Q.Apcae Spark ingestion of data, working with computations.
+
+Q.Differance between Fact & Dimension Tables?
+--Fact tables consist of facts or measures based on calculations can be made like amount sold, average sales,etc.
+--Dimension tables provides descriptive information for all the measurements recorded in fact tables
+--fact table should be at most atomic level whereas dimension table should be wordy, descriptive, complete
+--Primary key in fact table should be mapped as Foreign key in dimension table
+
+___________________________________________________________________________________________________
+A	B
+1	1
+2	1
+1	1
+
+Inner join
+1	1
+1	1
+1	1
+1	1
+1	1
+1	1
+
+Left join
+1	1
+1	1
+1	1
+2	N
+1	1
+1	1
+1	1
+
+right Join
+1	1
+1	1
+1	1
+1	1
+1	1
+1	1
+
+full outer
+1	1
+1	1
+1	1
+2	N
+1	1
+1	1
+1	1
+___________________________________________________________________________________________________
+Q.Print number from 1 to 50
+
+SELECT level from dual connect by level <= 50;
+
+with cte AS
+(
+select 1 number
+  UNION ALL
+  select number+1 from cte where number<100
+)
+SELECT * from cte;
+___________________________________________________________________________________________________
+Q.Find n'th highest salary in sql server
+
+CREATE TABLE Employees(
+	ID int IDENTITY(1,1) NOT NULL,
+ 	FirstName nvarchar(50),
+ 	LastName nvarchar(50),
+ 	Gender nvarchar(50),
+ 	Salary int,
+	CONSTRAINT [PK_id_M] PRIMARY KEY
+	(
+	[ID] ASC
+	)
+)
+
+Insert into Employees(id,firstname,lastname,gender,salary) values (1,'Ben', 'Hoskins', 'Male', 70000);
+Insert into Employees(id,firstname,lastname,gender,salary) values (2,'Mark', 'Hastings', 'Male', 60000);
+Insert into Employees(id,firstname,lastname,gender,salary) values (3,'Steve', 'Pound', 'Male', 45000);
+Insert into Employees(id,firstname,lastname,gender,salary) values (4,'Ben', 'Hoskins', 'Male', 70000);
+Insert into Employees(id,firstname,lastname,gender,salary) values (5,'Philip', 'Hastings', 'Male', 45000);
+Insert into Employees(id,firstname,lastname,gender,salary) values (6,'Mary', 'Lambeth', 'Female', 30000);
+Insert into Employees(id,firstname,lastname,gender,salary) values (7,'Valarie', 'Vikings', 'Female', 35000);
+Insert into Employees(id,firstname,lastname,gender,salary) values (8,'John', 'Stanmore', 'Male', 80000);
+
+1)using subquery
+
+>select * from (select DISTINCT salary from Employees ORDER by salary desc limit N) order by salary ASC limit 1;
+
+2)using Window Function
+>select id,salary from
+(select *,dense_rank() over(ORDER by salary desc) as rank from Employees) where rank = 3;
+
+___________________________________________________________________________________________________
+Q.SQL query to get complete organizational hierarchy based on Employee ID
+Create table Employees
+(
+ EmployeeID int identity(1,1) primary key,
+ EmployeeName nvarchar(50),
+ ManagerID int,
+FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+Insert into Employees values (1,'John', NULL);
+Insert into Employees values (2,'Mark', NULL);
+Insert into Employees values (3,'Steve', NULL);
+Insert into Employees values (4,'Tom', NULL);
+Insert into Employees values (5,'Lara', NULL);
+Insert into Employees values (6,'Simon', NULL);
+Insert into Employees values (7,'David', NULL);
+Insert into Employees values (8,'Ben', NULL);
+Insert into Employees values (9,'Stacy', NULL);
+Insert into Employees values (10,'Sam', NULL);
+
+Update Employees Set ManagerID = 8 Where EmployeeName IN ('Mark', 'Steve', 'Lara');
+Update Employees Set ManagerID = 2 Where EmployeeName IN ('Stacy', 'Simon');
+Update Employees Set ManagerID = 3 Where EmployeeName IN ('Tom');
+Update Employees Set ManagerID = 5 Where EmployeeName IN ('John', 'Sam');
+Update Employees Set ManagerID = 4 Where EmployeeName IN ('David');
+
+
+declare @id int;
+set @id=7;
+
+with cte AS
+(
+  select EmployeeID,EmployeeName,ManagerID
+  from Employees where EmployeeID=@id
+  
+  UNION ALL
+  
+  select Employees.EmployeeID,Employees.EmployeeName,Employees.ManagerID
+  from Employees
+  join cte
+  ON Employees.EmployeeID = cte.ManagerID
+)
+select e.EmployeeName, ISNULL(c.EmployeeName, 'No Boss') as ManagerName from cte c
+left join cte e 
+ON e.EmployeeID = c.ManagerID;
+___________________________________________________________________________________________________
+Q.Delete Duplicates from table
+
+with cte as
+(
+	select *, ROW_NUMBER() OVER(partition by id order by id) as row from employee
+)delete from cte where row>1;
+___________________________________________________________________________________________________
+Q.Transform rows into columns
+
+SELECT country, city1,city2,city3 FROM
+(
+select country, city, 'city'+CAST(ROW_NUMBER() over(partition by country) as varchar) as rownum from Countries
+)Tempq
+PIOVT
+(
+	max(city)
+  	for rownum in (city1,city2,city3)
+)PIV
+___________________________________________________________________________________________________
+Q.Import all Mysql tables to Hive
+
+>>load data from one table
+sqoop import \
+--connect jdbc:mysql://localhost:3306/retail_db \
+--username user \
+--password root \
+--table order_items
+--columns item_id, item_name
+--warehouse-dir /apps/user/hive/warehouse/retail_test_db
+--num-mappers 1
+--append
+
+sqoop import \
+--connect jdbc:mysql://localhost:3306/retail_db \
+--username user \
+--password root \
+--table order_items \
+--columns item_id, item_name \
+--warehouse-dir /apps/user/hive/warehouse/retail_test_db \
+--num-mappers 2 \
+--as-textfile \
+--compress \
+--compression-codec org.apache.hadoop.io.compress.SnappyCodec
+
+
+sqoop import-all-tables \
+--connect jdbc:mysql://localhost:3306/retail_db \
+--username user \
+--password root \
+--warehouse-dir /apps/user/hive/warehouse/retail_test_db
+--autoreset-to-one-mapper
+
+when there is primary key on table load will be done by using --num-mappers, if there is no primary key thenn using only single mapper.
+
+Suppose i want to load 100 tables 20 without PK(for this 1 mapper) and 80 with PK (for this we should use 8 mappers)
+
+-------------------------------------------------------------
+sqoop import-all-tables \
+--connect jdbc:mysql://localhost:3306/retail_db \
+--username user \
+--password root \
+--warehouse-dir /apps/user/hive/warehouse/retail_test_db
+
+above will fail saying table doesnt have pK
+
+sqoop import \
+--connect jdbc:mysql://localhost:3306/retail_db \
+--username user \
+--password root \
+--warehouse-dir /apps/user/hive/warehouse/retail_test_db
+--auto-reset-to-mapper
+
+This will run with one mapper as above table is not having PK
+-----------------------------------------------------------------
+// Things to remember for split-by
+// Column should be indexed
+// values in the field should be sparse
+// also often it should be sequence generated or evenly incremented
+// it should not have null values 
+
+sqoop import \
+-Dorg.apache.sqoop.splitter.allow_text_splitter=true \
+--connect jdbc:mysql://localhost:3306/retail_db \
+--username user \
+--password root \
+--table order_items
+--warehouse-dir /apps/user/hive/warehouse/retail_test_db
+--split-by order_status
+
+___________________________________________________________________________________________________
+
+>>Create and execute a Sqoop job with incremental append option
+sqoop import 
+--connect jdbc:mysql://localhost/test 
+--username root 
+--password hortonworks1 
+--table stocks 
+--target-dir /user/hirw/sqoop/stocks_append 
+--incremental append 
+--check-column id 
+--num-mappers 1
+
+>>Create Incremental Last Modified Job
+sqoop import
+--connect jdbc:mysql://localhost/test 
+--username root 
+--password hortonworks1 
+--table stocks 
+--target-dir /user/hirw/sqoop/stocks_modified 
+--incremental lastmodified 
+--check-column updated_on 
+--num-mappers 1 
+--append
+
+___________________________________________________________________________________________________
+For internal hive tables-- data is stored in a directory based on settings in hive.metastore.warehouse.dir "user/hive/warehouse"(default)
+
+When to use external tables
+--when data is also used outside of hive
+--when you do not want to delete data even when table is not there
+
+When to use internal tables
+--when data is temporary
+--you want hive to completely manage life cycle of the table and data
+
+___________________________________________________________________________________________________
+Q.How to schedule spark jobs in databricks
+--it can be scheduled using notebooks, jar files or spark-submit
+
+___________________________________________________________________________________________________
+
+Q.what is incremental load & full load
+Q.what is CTE
+
+Q.incremental load using sqoop
+Q.what is boundary-query in sqoop
+boundary-query 'select 10000,172113'
+Q.what is as-sequence-file & text-file in sqoop
+Q.what is append in sqoop
+
+Q ACID transactions in Hive
+Q.How we can get the data from the dropped external table (by mistake) of Hive?
+
+Q.I was asked to explain rack awareness of HDFS and the internal working of Apache Spark Architecture.
+Q.He asked me to explain what will happen when you submit the spark application to the spark engine. Difference between narrow and wide transformations with examples.
+Q.Difference between coalescing and repartitioning in spark. Which one is better in terms of performance. I was asked to explain whether the number of partitions created after applying to coalesce and repartition remains the same or different for the same dataset.
+Q.Discussion based on how Hadoop achieves high availability.
+Q.Conceptual Based questions were asked based on Data Lake, Data warehouse schemas (Star & Snowflake schema), cloud services ( e.g. little bit about (AWS EC2 machine, IAM policies & roles, how S3 bucket stores the data).
+Q.He asked me to write code for uploading CSV files on the S3 bucket using the boto3 library. I wrote the code for the same using Python and boto3 library on a notepad. But, I don’t remember the proper syntax but he was ok with the approach & pseudo code.
+Q.Why Agile is preferred over the waterfall model.
+Q.He gave me how to create a data model for relational databases.
+Q.explain the working & internal lakehouse architecture of Databricks. I was asked to explain data ingestion & data transformation concepts of the ETL pipeline in deep dive.
+Q.How staging layer works in data pipeline & its uses.
+Q.data warehouse architecture.
+Q.Questions asked based on Spark monitoring & Spark performance management. I explained all the answers in deep dive by taking practical examples.
+
+___________________________________________________________________________________________________
+Q.partitioning and bucketing with example
+*partition
+--StaticPartition--need to define no. of partition at table creation(if partition values beforehand), if any new values comes in fututre for that column will go to single partition
+--DynamicPartition--
+*Bucketing
+--need to spaecify bucket count at time of creation
+--we can increase it in future
+--incase of partitioning with bucketing, if i create 3 bucket, 3 buckets will be created for each partition
+--in which case of only bucketing without patitioning???
+___________________________________________________________________________________________________
+
+Q.default partition algorithm/formula used in mR & Spark
+--hash paritioner is default algo[hash of key % no. of reducer]--for mR
+				 [hash of key % no. of partitions]--for spark
+___________________________________________________________________________________________________
+				 [hash of key % no. of buckets]--for hive
+Q.Bucketing formula in Hive
+--same as above
+Q.list of file formats & when to use which in hive
+--585GB	 	505GB	  221GB		131GB
+(original) (14% smaller) (62% smaller) (78% smaller)
+   text	  	RCfile	  Parquet	ORC file
+
+--RC,ORC,parquet are columnar file format
+--RC file (faster read, slow writes, splitable, NO schema evolution,significant block compression)
+--ORC (75% compression, for many reads, for aggregation queries, column level aggragated count is present in file footer itself, Does not support schema evolution, Hive is optimised for ORC as ACID properties works better)
+---------------
+|Index data   |
+---------------
+|	      |
+|  Row Data   |
+|	      |
+---------------
+|Stripe Footer|
+---------------
+--Parquet (where your query is only hitiing on columns use parquet, faster reads with slow writes, conditionaly splitable, limited schema evolution, supports compression, used in spark mostly)
+<Col1 chunk1 + Col metadata>
+<Col2 chunk1 + Col metadata>
+<Col3 chunk1 + Col metadata>
+___________________________________________________________________________________________________
+
+Q.how to create Hive Acid table
+required steps
+1)table should be internal/managed
+2)it has to be bucketed
+3)use only ORC format
+4)transactional = True
+--hive.support.concurrency = true
+--hive.enfore.bucketing = true
+--hive.exec.dynamic.partition.mode = nonstrict
+--hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
+--hive.compactor.worker.initiator.on = true
+--hive.compactor.worker.threads = 1
+
+Create table Sample(
+	col1 int,
+	col2 String,
+	col3 String
+)
+Clustered by (col3) into 3 buckets
+stored as ORC TBLPROPERTIES('transactional'='true');
+___________________________________________________________________________________________________
+Q.Repartition & Coalese
+--repartition is used to increase partition
+--to decrease partition use coalese
+___________________________________________________________________________________________________
+Q.2 blocks in HDFS how many input&output tasks will be created in spark
+--no of blocks in HDFS = no. of input tasks in Spark &mR
+--if no repartition & coalese no. of output tasks = no. of input tasks
+___________________________________________________________________________________________________
+Q.write spark word count program
+--read text file as RDD
+rdd = sc.textFile("to read as RDD")
+llist = lines.collect()
+for line in llist:
+	print(line)
+
+--read text file as DataFrame
+df = spark.read.text("to read as DF")
+
+#read multiple text files at once
+df=sc.wholeTextFiles("path/*")
+Each file is read as a single record and returned in a key-value pair, where the key is the path of each file, the value is the content of each file.
+
+instead above use 
+df=spark.read.json("<directorty_path>/*")
+spark will read all the files in the directory into dataframe.
+
+#When you know the names of the multiple files you would like to read, just input all file names with comma separator in order to create a single RDD.
+rdd = sc.textFile("C:/tmp/files/text01.txt,C:/tmp/files/text02.txt")
+
+PROGRAM:
+from operator import add
+lines = sc.textFile('path')
+counts = lines.flatMap(lambda x: x.split(' ')).map(lambda x: (x, 1)).reduceByKey(add)
+output = counts.collect()
+for (word, count) in output:
+	print("%s: %i" % (word, count)) 
+___________________________________________________________________________________________________
+Q.spark program to join 2 dataframe
+empDF.join(deptDf, empDf.emp_dept_id == deptDf.dept_id, "inner").show(truncate=False)
+___________________________________________________________________________________________________
