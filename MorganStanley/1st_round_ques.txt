@@ -1,0 +1,100 @@
+python
+--how python is differant from java
+--how memory management done in python
+--how to create object in python
+
+Q.what are decorators
+--Decorators solve 2 issues:
+1)Code duplication
+2)Cluttering main logic of function with additional functionality
+common usecases::::
+Checking argument type at runtime
+Benchmark function calls
+Cache function results
+Count function calls
+Checking metadata (permissions, roles, etc.)
+Metaprogramming
+>>Differant ways to use Decorators
+https://betterprogramming.pub/why-you-need-decorators-in-your-python-code-df12d43eac9c
+
+--what are generators & iterators
+Iterator in python is an object that is used to iterate over iterable objects like lists, tuples, dicts, and sets. The iterator object is initialized using the iter() method. It uses the next() method for iteration.
+When we use a for loop to traverse any iterable object, internally it uses the iter() method to get an iterator object which further uses next() method to iterate over. This method raises a StopIteration to signal the end of the iteration.
+
+Generator is a special function in python that returns a generator object to the caller
+A generator function is defined like a normal function, but whenever it needs to generate a value, it does so with the yield keyword rather than return. If the body of a def contains yield, the function automatically becomes a generator function.
+  
+--what is lambda functions
+
+--How yield is differant from return
+yeild convets regular python function into generator
+it replace the return of a function & suspend its execution without destroying local variables
+Code written after yeild statement execute in next function call
+Return sends a specified value back to its caller whereas Yield can produce a sequence of values. We should use yield when we want to iterate over a sequence, but don’t want to store the entire sequence in memory.
+
+
+SQL
+--what is differance between views and tables & when to use views
+A view is a virtual table. A view consists of rows and columns just like a table. The difference between a view and a table is that views are definitions built on top of other tables (or views), and do not hold data themselves.If data is changing in the underlying table, the same change is reflected in the view. A view can be built on top of a single table or multiple tables. 
+==> view actually retrive the data based on select statement when it is called
+why use it?
+1_data security
+2_ease of use
+3_space saving
+View Do not have physical memory allocated for data but for schema it is.
+but For materialized views(Indexed views) memory is allocated
+
+Create view temp_view as
+select col1, col2 from ABC;
+
+ 
+--till when views are available for user
+--what is differance between CTE and views
+Views being a physical object on database (but does not store data physically) and can be used on multiple queries, thus provide flexibility and centralized approach. CTE, on the other hand are temporary and will be created when they are used; that's why they are called as inline view
+
+--What are sql indexes
+An index is a schema object. It is used by the server to speed up the retrieval of rows by using a pointer. It can reduce disk I/O(input/output) by using a rapid path access method to locate data quickly. An index helps to speed up select queries and where clauses, but it slows down data input, with the update and the insert statements. Indexes can be created or dropped with no effect on the data.
+
+Types of indexes:
+1)Clustered
+Clustred index defines order in which data is physically stored in table, as data can be sorted in only one way there can be only one clustred index on table .In SQL server primary key constraint auto-incrementally creates a clustred index on that table.
+You can create Custom Clustred index
+CREATE CLUSTERED INDEX IX_tblStudent_Gender_Score
+ON student(gender ASC, total_score DESC)
+
+As you can see above we have used 2 columns to create Clustered index it is also called as composite index.The above index first sorts all the records in the ascending order of the gender. If gender is same for two or more records, the records are sorted in the descending order of the values in their “total_score” column
+
+2)Non-Clustered
+Nonclustred index doesn't sort physical data on table in fact nonclustred index is stored at one place and table data is stored at other place.This allows More than one non-clustred index per table 
+When a query is issued against a column on which the index is created, the database will first go to the index and look for the address of the corresponding row in the table. It will then go to that row address and fetch other column values. It is due to this additional step that non-clustered indexes are slower than clustered indexes.
+CREATE NONCLUSTERED INDEX IX_tblStudent_Name
+ON student(name ASC)
+
+when to use clustred index?
+--Since non-clustred index  are stored at seperate location than original table, non-clustred indexes consume additional disk space. if disk space is a problem use clustred index.
+Clustered indexes are faster than non-clustered indexes since they don’t involve any extra lookup step.
+
+
+CREATE INDEX index_1
+ ON TABLE_NAME column;
+
+--how to select nth record in table
+--how to get duplicate records & and delete them(for millions of records) efficient way
+--select records with even EmpID from table
+
+Cloud
+--what is cloud orchestration
+--what is workflow orchestration
+--why to choose cloud solution 
+
+Hadoop
+--what is HDFS expain working
+--How to handle fault tolerance in HDFS
+--what is fsimage
+--what is working of namenode
+--what is working of yarn
+--what are the components of resource manager(application master, scheduler)
+--what are the components of node manager(application master)
+--is it efficient to always convert data to key,value pair in MapReduce
+--if allocated memory for spark job is less than size of data being processed how spark will pickup data from memory(process of picking up data)
+ 
