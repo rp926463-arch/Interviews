@@ -1,0 +1,61 @@
+Acount
+
+
+
+accno amount(+ve/-ve)
+
+with cte_1 as
+(
+select *,sum(amount) as NetAmount over(partition by accno) from Account 
+),
+wiht cte_2 as
+(
+select *,sum(amount) as deposit over(partition by accno) from cte_1 where amount > 0
+)select accno, deposit,(NetAmount - deposit) as withDrawal from cte_2 group by accno, deposit, withDrawal;
+
+
+acc1 9000	3000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+daily load for table
+high volume'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
