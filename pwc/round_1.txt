@@ -1,0 +1,52 @@
+t1_col	t2_col
+1	1 			
+2 	1
+6	6
+7 	N
+Null	4
+
+Inner
+1	1
+1	1
+6	6
+
+Left
+1	1
+1	1
+2	N
+6	6
+7	N
+N	N
+
+right
+1	1	
+1	1	
+6	6	
+N	N
+N	4
+
+full outer
+
+1	1
+1	1
+2	N 
+6	6
+7 	N
+Null	N
+N	N
+N	4
+
+
+
+
+how you will merge 1M files to one file using ADF & DF
+how will you delete duplicate records from table containg Millions of records
+how can we reduce cluster spinup time for DataFlow in Azure --> TTL
+Can we use CTE's to delete records
+What thing you check for doing data modeling
+How Sql statement executes
+What is recursive CTE;
+SQl query to get Organizational Hierarchy
+
+
+
