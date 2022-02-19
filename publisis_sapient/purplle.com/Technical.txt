@@ -1,0 +1,3 @@
+Design pipeline to process clickStream data from an API & create Dashboard for same
+--Data is generating evey 2 sec
+--create visualization for every 5 min
