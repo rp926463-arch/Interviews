@@ -1,0 +1,219 @@
+Q.What is dictionary in python
+--it is an unordered collection of key value pair
+*****************************************************************************************************************************************
+Q.what is Pickling and Unpickling in Python?
+CONCEPT
+________
+--Pickle module in python allows accepting any object and then converting it into string representation(byte stream)
+it then dumps same into file by means of dumps() function this process is known as pickling/serialization
+--Unpickling: It is the inverse of Pickling process where a byte stream is converted into an object hierarchy
+loads() function is used to deserialize byte stream
+
+EXAMPLE
+_______
+>>> import pickle
+>>> a = Anon()
+>>> a.foo = 'bar'
+>>> pickled = pickle.dumps(a)
+>>> unpickled = pickle.loads(pickled)
+>>> unpickled.foo
+'bar'
+
+import pickle
+class A:
+    def __init__(self,a):
+        self.a = a
+obj = A(2)
+with open('conf.pickle', 'wb') as conf_file:
+    conf_file.write(pickle.dumps(obj))
+with open('conf.pickle', 'rb') as conf_file:
+    retrived_obj = pickle.loads(conf_file.read())
+print(retrived_obj.a)
+
+NOTES:
+=>two identical objects can be pickled and result in different strings - or even the same object pickled twice can have different representations. This is because the pickle can include reference count information.
+=>similar module is json.loads() & json.dumps() if you want to store you data as binary go with pickle(fast Python object serialization), json if you want to store data in text format.If you are more concerned with interoperability, security, and/or human readability, then use JSON. 
+=>Use cases
+1)saving program state to disk so that it can carry on where it left off when restarted
+2)sending python data over network over TCP connection in multicore or distributed computing
+*****************************************************************************************************************************************
+Q.Write a program in Python for getting indices of N maximum values in a NumPy array.
+
+import numpy as np
+arr = np.array([1, 3, 2, 4, 5])
+print(arr.argsort()[-3:][::-1])
+#Output:
+#[4 3 1]
+
+==>arr.argsort() Output sorted array indices
+*****************************************************************************************************************************************
+Q.Program to randomize item of list inplace?
+from random import shuffle
+l = [1, 3, 2, 4, 5]
+shuffle(l)
+print(l)
+*****************************************************************************************************************************************
+Lambda function is anonymous function that can have only one statement but any number of parameters
+a = lambda x,y : x+y
+print(a(5, 6))
+*****************************************************************************************************************************************
+How are arguments passed in Python? By value or by reference?
+--All parameters (arguments) in the Python language are passed by reference.
+*****************************************************************************************************************************************
+Q.How a file is deleted in Python?
+import os
+os.remove(filename)
+os.unlink(filename)
+*****************************************************************************************************************************************
+Q.What are python module, package & library?
+--module is simple python file that contains collection of functions,global variables & having .py extension file.it is executable file and to organize all modules we have concept called package
+--package is a simple directory having collection of modules, directory contains python modules and also having __init__.py file by which interpreter interprets it as a package.
+*****************************************************************************************************************************************
+Q.Differance between list and array in python
+List				Array
+--can consist of elements 	--Only consist of elements
+belonging to diff data		belonging to same data type
+types
+e.g.l=[1,'a']			e.g.import array as ar
+				ar.array('i',[1,2,3])
+*****************************************************************************************************************************************
+string_name.capitalize() capitalize first letter of string
+*****************************************************************************************************************************************
+Q.What does the method object() do?
+--The method returns a featureless object that is base for all classes. This method does not take any parameters.
+*****************************************************************************************************************************************
+Q.What is pep 8
+Python Enhancement Proposal or pep 8 is a set of rules that specify how to format Python code for maximum readability.
+*****************************************************************************************************************************************
+Q.Explain Deep & Shallow copy?
+--Assignment statement do not copy objects, they just create binding between target and object.when we use '=' operator it does not create new object it only store reference of original object.
+Sometimes,user want to deal with mutable objects & want to create copy of object, there are 2 ways to do that
+1)Deep copy : Any changes made in copy of object do not reflect in original object
+2)Shallow copy : any changes made to a copy of object do reflect in the original object
+
+import copy
+l1 = [1,2,3,4]
+l2 =copy.copy(l1)
+l3 =copy.deepcopy(l1)
+
+Note =>Differance between shallow & deepcopy only relevant for compound objects (Objects that contain other objects e.g list)
+Shallow copy create new compund object & then insert references to child objects found in original object
+Deep copy create new compund object & then insert copy of child objects found in original
+*****************************************************************************************************************************************
+Q.Type Casting in Python
+--2 types
+1)Implicit Type Casting : Python convert type to another type automatically
+2)Explicit Type Casting : require user involvement to convert variable data type.
+*****************************************************************************************************************************************
+Q.What is list comprehension & its advantage
+--create new list from other iterables like tuple,string,arrays,lists
+Advantage:
+1)More time&Space efficient than loops
+2)Require fewer lines of code
+
+import time
+
+def for_loop(n):
+	res = []
+	for i in range(n):
+		res.append(i**2)
+	return res
+
+def list_comprehension(n):
+	return [i**2 for i in range(n)]
+
+begin = time.time()
+for_loop(10**6) 
+end = time.time()
+
+print("time taken for for_loop {}".format(round(end-begin,2)))
+
+begin = time.time()
+list_comprehension(10**6) 
+end = time.time()
+
+print("time taken for list_comp {}".format(round(end-begin,2)))
+*****************************************************************************************************************************************
+set(unordered collection of data) is iterable but it does not support indexing 
+based on data structure of hash table
+adding element to set
+>> s.add('a')
+>> s1 = {'a','b'}
+>> s2 = {'c'}
+>> s1.union(s2) "|" combine two sets
+s1.intersection(s2) "&"
+s1.difference(s2) "-"
+s.clear()
+s.issubset(t)
+s.issuperset(t)
+
+Note => Only instance of immutable object can be added in set
+s.add([1,2]) #not allowed
+*****************************************************************************************************************************************
+str() and repr() both are used to get a string representation of object.
+s = 'Hello, Geeks.'
+print(repr(s))
+print(str(s))
+print(repr(2.0/11.0))
+print(str(2.0/11.0))
+
+==>str() is used for creating output for end user while repr() is mainly used for debugging and development. repr’s goal is to be unambiguous and str’s is to be readable
+*****************************************************************************************************************************************
+Tuple
+--a, b, c = Tuple1
+--supports indexing
+--tup1 + tup2 #concatenation of tuples
+--del tup1
+--tup1.index(value) #returns index of value in tuple
+--tup1.count(value) #return freq of occurance of specific value
+
+*****************************************************************************************************************************************
+Enumerate()
+>> l1 = ["eat","sleep","repeat"]
+>> print(list(enumerate(l1)))
+[(0,"eat"),(1,"sleep"),(2,""repeat")]
+*****************************************************************************************************************************************
+Q.Underscore (_) in Python
+#Single Underscore:
+--In Interpreter : return last executed expression value in python interpreter
+--After a name : use to avoid confusion between python keyword and user varibale
+--Before a name : variable/function/method name indicates to programmer that It is for internal use only
+#Double Underscore:
+__leading_double_underscore
+__before_after__ : Name with start with __ and ends with same considers special methods in Python. Python provides these methods to use it as the operator overloading depending on the user.
+*****************************************************************************************************************************************
+Q.How to list all file names under dir in list
+import os
+os.listdir(path)
+*****************************************************************************************************************************************
+Q.What are *args and **kwargs in Python
+--In Python, we can pass a variable number of arguments to a function using special symbols. There are two special symbols:
+
+1.)*args (Non-Keyword Arguments)
+def myFun(*argv):
+    for arg in argv:
+        print (arg)
+myFun('Hello', 'Welcome', 'to', 'GeeksforGeeks')
+
+2.)**kwargs (Keyword Arguments)
+The reason is because the double star allows us to pass through keyword arguments (and any number of them).
+--A keyword argument is where you provide a name to the variable as you pass it into the function.
+--One can think of the kwargs as being a dictionary that maps each keyword to the value that we pass alongside it. That is why when we iterate over the kwargs there doesn’t seem to be any order in which they were printed out.
+
+def myFun(**kwargs):
+	for key, value in kwargs.items():
+		print ("%s == %s" %(key, value))
+myFun(first ='Geeks', mid ='for', last='Geeks')
+*****************************************************************************************************************************************
+BroadCasting in NNumpy arrays
+--The term broadcasting refers to how numpy treats arrays with different Dimension during arithmetic operations which lead to certain constraints, the smaller array is broadcast across the larger array so that they have compatible shapes. 
+
+
+*****************************************************************************************************************************************
+Decorator is a callable(function) that returns callable(function)
+Basically decorator takes in function as argument add some functionality and return it
+
+
+
+
+https://www.interviewbit.com/python-interview-questions/#experienced
