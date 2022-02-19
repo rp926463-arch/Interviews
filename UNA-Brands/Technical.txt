@@ -1,0 +1,50 @@
+
+table1	table2
+id	id
+1	1	
+2	3
+NULL	NULL	
+	NULL
+
+Inner
+
+id	id
+1	1
+
+
+Left
+1	1
+2	N
+N	N
+
+right
+1	1
+N	3
+N	N
+N	N
+
+full outer
+1	1
+2	N
+N	N
+N	3	
+N	N
+N	N
+
+
+--Join in pySpark
+df1.join(df2, df1.id == df2.id, "inner")
+
+--Rename Column 
+df.withColumnRenamed('name', 'firstName')
+
+Q.What is differance between full load and incremental load
+
+Q.What are data warehousing techniques
+
+Q.what is star & snowflec schema
+
+
+https://sqliteonline.com/
+
+
