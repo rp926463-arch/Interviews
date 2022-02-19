@@ -1,0 +1,94 @@
+what is cadidate key & surrogate key 
+
+Diff bet AnsiSQL & TSQL
+A	B
+1	1
+1	3
+1	N
+2
+3
+N
+
+Inner join
+A	B
+1	1
+1	1
+1	1
+3	3
+
+left join
+A	B
+1	1
+1	1
+1	1
+2	N
+3	3
+N	N
+
+
+TBL
+
+
+COL
+F
+T
+F
+T
+
+update table TBL set COL=F where COL=T;
+update table TBL set COL=T where COL=F;
+_________________________________________________________
+
+Dupllicates in table . How will you remove those duplicate
+
+with cte_1 as
+(
+select *,DENSE_RANK() over(partition by id) as rank from Employee 
+)DELETE from cte_1 where rank > 1;
+_________________________________________________________
+Write down unix command to find out files with age greater than 1 year and size less than 1 MB
+
+find . -mtime +365 
+find . -type f -size -1M
+
+find /path -mtime +365 -size -1M 
+_____________________________________________________________
+Data = " THIS IS DATAA
+
+
+
+
+KKK
+
+
+HELLO"
+
+Write a python code to find  out number of spaces in the above data;
+
+l = list(Data)
+count=0
+for i in l:
+	if i==' ':
+		count += 1
+print("No. of spaces = "+count)
+___________________________________________________________________________
+differance between parquet & avro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
