@@ -155,3 +155,7 @@ Q.Create DataFrame from RDD
 2 ways
 --rdd.toDf()
 --sqlContext.createDataframe(rdd, schema)
+
+
+
+https://azuremlstorage199.blob.core.windows.net/azureml01blob/Loan+Approval+Prediction.csv
