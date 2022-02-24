@@ -65,7 +65,7 @@ import os
 os.remove(filename)
 os.unlink(filename)
 *****************************************************************************************************************************************
-Q.What are python module, package & library?
+Q.What are python module, package?
 --module is simple python file that contains collection of functions,global variables & having .py extension file.it is executable file and to organize all modules we have concept called package
 --package is a simple directory having collection of modules, directory contains python modules and also having __init__.py file by which interpreter interprets it as a package.
 *****************************************************************************************************************************************
